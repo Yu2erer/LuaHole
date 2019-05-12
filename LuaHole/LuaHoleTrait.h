@@ -11,13 +11,13 @@ namespace LuaHole {
     struct __false_type {};
 
     template <typename T>
-    struct __retVoid {
-        typedef __false_type isVoid;
+    struct __ret_void {
+        typedef __false_type is_void;
     };
 
     template <>
-    struct __retVoid<void> {
-        typedef __true_type isVoid;
+    struct __ret_void<void> {
+        typedef __true_type is_void;
     };
 }
 #endif //LUAHOLE_LUAHOLETRAIT_H

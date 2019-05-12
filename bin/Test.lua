@@ -11,5 +11,4 @@ print(sdouble)
 print(sbool)
 print(sstring)
 
-t = FuncTest()
-print(t)
+t = FuncTest(false)

@@ -8,6 +8,7 @@
 #include "LuaHeader.h"
 #include "LuaHolePop.h"
 #include "LuaHolePush.h"
+#include "LuaHoleFunc.h"
 
 namespace LuaHole {
 
@@ -48,6 +49,10 @@ namespace LuaHole {
         T Get(const char *name) const { return LuaHole::Get<T>(L, name); }
         template <typename T>
         void Set(const char *name, const T &arg) const { LuaHole::Set(L, name, arg); }
+        template <typename FUNC>
+        void RegisterFunc(const char *name, FUNC fn) const {
+            LuaHole::RegisterFunc(L, name, fn);
+        }
     private:
         lua_State *L;
     };

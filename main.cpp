@@ -23,14 +23,14 @@ void TestSetToLua(LuaHole::LuaWrapper &L) {
     LuaHole::Set(L, "sstring", str);
 }
 
-void FuncTest() {
-    cout << "FuncTest" << endl;
+void FuncTest(bool i) {
+    cout << "FuncTest " << i << endl;
 }
 
 int main() {
     LuaHole::LuaWrapper L;
     TestSetToLua(L);
-    LuaHole::RegisterFunc(L, "FuncTest", FuncTest);
+    L.RegisterFunc("FuncTest", FuncTest);
     L.doFile("Test.lua");
     L.doString("print (\"C++ doString Succ\")");
     TestGetFromLua(L);

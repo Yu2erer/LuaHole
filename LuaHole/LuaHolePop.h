@@ -43,6 +43,13 @@ namespace LuaHole {
     }
 
     template <>
+    inline const char* popValue(lua_State *L) {
+        const char* ret = lua_tostring(L, -1);
+        lua_pop(L, 1);
+        return ret;
+    }
+
+    template <>
     inline bool popValue(lua_State *L) {
         bool ret = lua_toboolean(L, -1) == 1;
         lua_pop(L, 1);
