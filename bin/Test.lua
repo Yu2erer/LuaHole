@@ -12,3 +12,4 @@ print(sbool)
 print(sstring)
 
 t = FuncTest(false)
+printf("test printf %d %.2f %d\n", 13.14, 10, 33)

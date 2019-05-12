@@ -1,9 +1,6 @@
 #include <iostream>
 #include <string>
 #include "LuaHole.h"
-#include "LuaHolePop.h"
-#include "LuaHolePush.h"
-#include "LuaHoleFunc.h"
 
 using namespace std;
 
@@ -31,6 +28,7 @@ int main() {
     LuaHole::LuaWrapper L;
     TestSetToLua(L);
     L.RegisterFunc("FuncTest", FuncTest);
+    L.RegisterFunc("printf", printf);
     L.doFile("Test.lua");
     L.doString("print (\"C++ doString Succ\")");
     TestGetFromLua(L);
