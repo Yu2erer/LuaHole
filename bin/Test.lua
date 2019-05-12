@@ -10,3 +10,5 @@ print(sint)
 print(sdouble)
 print(sbool)
 print(sstring)
+
+FuncTest()

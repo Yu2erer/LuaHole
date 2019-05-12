@@ -3,6 +3,7 @@
 #include "LuaHole.h"
 #include "LuaHolePop.h"
 #include "LuaHolePush.h"
+#include "LuaHoleFunc.h"
 
 using namespace std;
 
@@ -17,19 +18,22 @@ void TestGetFromLua(LuaHole::LuaWrapper &L) {
 void TestSetToLua(LuaHole::LuaWrapper &L) {
     L.Set("sint", 520);
     LuaHole::Set(L, "sdouble", 122.57);
-    const char *str = "I come from C++";
     LuaHole::Set(L, "sbool", false);
+    const char *str = "I come from C++";
     LuaHole::Set(L, "sstring", str);
+}
+
+void FuncTest() {
+    cout << "FuncTest" << endl;
 }
 
 int main() {
     LuaHole::LuaWrapper L;
     TestSetToLua(L);
+    LuaHole::RegisterFunc(L, "FuncTest", FuncTest);
     L.doFile("Test.lua");
     L.doString("print (\"C++ doString Succ\")");
     TestGetFromLua(L);
-
-
 
     return 0;
 }
