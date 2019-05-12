@@ -5,6 +5,8 @@
 #ifndef LUAHOLE_LUAHOLEFUNC_H
 #define LUAHOLE_LUAHOLEFUNC_H
 #include "LuaHeader.h"
+#include "LuaHoleTrait.h"
+#include "LuaHolePush.h"
 
 namespace LuaHole {
 
@@ -26,13 +28,23 @@ lua_setglobal(L, name);\
             PUSH_FUNC;
         }
         static int proxyFunc(lua_State *L) {
-            ((func)lua_touserdata(L, lua_upvalueindex(1)))();
-            return 0;
+            typedef typename __retVoid<Ret>::isVoid isVoid;
+            return doCall<Ret>(L, (func)lua_touserdata(L, lua_upvalueindex(1)), isVoid());
         }
     private:
         typedef Ret(*func)();
+        template <typename Result>
+        static int doCall(lua_State *L, func fn, __false_type) {
+            objPush<Result>(L, fn());
+            return 1;
+        }
+        template <typename Result>
+        static int doCall(lua_State *L, func fn, __true_type) {
+            fn();
+            return 0;
+        }
     };
-
+    
     template <typename FUNC>
     void RegisterFunc(lua_State *L, const char *name, FUNC fn) {
         funcBind<FUNC>::pushFunc(L, name, fn);

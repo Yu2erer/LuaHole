@@ -11,4 +11,5 @@ print(sdouble)
 print(sbool)
 print(sstring)
 
-FuncTest()
+t = FuncTest()
+print(t)
