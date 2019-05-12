@@ -7,4 +7,4 @@ file(GLOB lua_src "lua/*.c")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 
 include_directories(lua/)
-add_executable(LuaHole main.cpp ${lua_src} LuaHeader.h LuaHole.h LuaPopValue.h LuaPushValue.h)
+add_executable(LuaHole main.cpp ${lua_src} LuaHole/LuaHeader.h LuaHole/LuaHole.h LuaHole/LuaPopValue.h LuaHole/LuaPushValue.h)

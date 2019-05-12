@@ -10,7 +10,7 @@ namespace LuaHole {
 
     template <typename T>
     inline T popValue(lua_State *L) {
-        // TODO: ÔİÊ±»¹²»ÖªµÀÕâÀï¿ÉÄÜ»áÓÃÔÚÄÄÀï...
+        // TODO: æš‚æ—¶è¿˜ä¸çŸ¥é“è¿™é‡Œå¯èƒ½ä¼šç”¨åœ¨å“ªé‡Œ...
         return 0;
     }
 
@@ -49,7 +49,7 @@ namespace LuaHole {
         return ret;
     }
 
-    // »ñÈ¡ Lua È«¾Ö±äÁ¿
+    // è·å– Lua å…¨å±€å˜é‡
     template <typename T>
     inline T Get(lua_State *L, const char *name) {
         lua_getglobal(L, name);
