@@ -6,7 +6,7 @@
 #define LUAHOLE_LUAHOLE_H
 #include <iostream>
 #include "LuaHeader.h"
-#include "LuaPopValue.h"
+#include "LuaHolePop.h"
 
 namespace LuaHole {
 

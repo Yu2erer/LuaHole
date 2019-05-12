@@ -6,4 +6,5 @@ dTest = 3.14159
 bTest = true
 --
 
-
+print(sint)
+print(sdouble)

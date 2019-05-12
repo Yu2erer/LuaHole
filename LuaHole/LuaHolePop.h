@@ -2,8 +2,8 @@
 // Created by yu2erer on 2019/5/10.
 //
 
-#ifndef LUAHOLE_LUAPOPVALUE_H
-#define LUAHOLE_LUAPOPVALUE_H
+#ifndef LUAHOLE_LUAHOLEPOP_H
+#define LUAHOLE_LUAHOLEPOP_H
 #include "LuaHeader.h"
 
 namespace LuaHole {
@@ -57,4 +57,4 @@ namespace LuaHole {
     }
 }
 
-#endif //LUAHOLE_LUAPOPVALUE_H
+#endif //LUAHOLE_LUAHOLEPOP_H
