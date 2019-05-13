@@ -9,50 +9,50 @@
 namespace LuaHole {
 
     template <typename T>
-    inline T popValue(lua_State *L) {
+    inline T __popValue(lua_State *L, int index = -1, bool pop = true) {
         // TODO: 暂时还不知道这里可能会用在哪里...
         return 0;
     }
 
     template <>
-    inline int popValue(lua_State *L) {
-        int ret = static_cast<int>(lua_tonumber(L, -1));
-        lua_pop(L, 1);
+    inline int __popValue(lua_State *L, int index, bool pop) {
+        int ret = static_cast<int>(lua_tonumber(L, index));
+        pop ? lua_pop(L, 1) : ((void)0);
         return ret;
     }
 
     template <>
-    inline double popValue(lua_State *L) {
-        double ret = static_cast<double>(lua_tonumber(L, -1));
-        lua_pop(L, 1);
+    inline double __popValue(lua_State *L, int index, bool pop) {
+        double ret = static_cast<double>(lua_tonumber(L, index));
+        pop ? lua_pop(L, 1) : ((void)0);
         return ret;
     }
 
     template <>
-    inline float popValue(lua_State *L) {
-        float ret = static_cast<float>(lua_tonumber(L, -1));
-        lua_pop(L, 1);
+    inline float __popValue(lua_State *L, int index, bool pop) {
+        float ret = static_cast<float>(lua_tonumber(L, index));
+        pop ? lua_pop(L, 1) : ((void)0);
         return ret;
     }
 
     template <>
-    inline std::string popValue(lua_State *L) {
-        std::string ret = static_cast<std::string>(lua_tostring(L, -1));
-        lua_pop(L, 1);
+    inline std::string __popValue(lua_State *L, int index, bool pop) {
+        std::string ret = static_cast<std::string>(lua_tostring(L, index));
+        pop ? lua_pop(L, 1) : ((void)0);
         return ret;
     }
 
     template <>
-    inline const char* popValue(lua_State *L) {
-        const char* ret = lua_tostring(L, -1);
-        lua_pop(L, 1);
+    inline const char* __popValue(lua_State *L, int index, bool pop) {
+        const char* ret = lua_tostring(L, index);
+        pop ? lua_pop(L, 1) : ((void)0);
         return ret;
     }
 
     template <>
-    inline bool popValue(lua_State *L) {
-        bool ret = lua_toboolean(L, -1) == 1;
-        lua_pop(L, 1);
+    inline bool __popValue(lua_State *L, int index, bool pop) {
+        bool ret = lua_toboolean(L, index) == 1;
+        pop ? lua_pop(L, 1) : ((void)0);
         return ret;
     }
 
@@ -60,7 +60,12 @@ namespace LuaHole {
     template <typename T>
     inline T Get(lua_State *L, const char *name) {
         lua_getglobal(L, name);
-        return popValue<T>(L);
+        return __popValue<T>(L, true);
+    }
+
+    template <typename T>
+    inline T Get(lua_State *L, int index) {
+        return __popValue<T>(L, index, false);
     }
 }
 

@@ -11,5 +11,5 @@ print(sdouble)
 print(sbool)
 print(sstring)
 
-t = FuncTest()
-printf("test printf %d %.2f %d\n", 13.14, 10, 33)
+t = FuncTest("123", 5)
+--printf("test printf %d %.2f %d\n", 13.14, 10, 33)
