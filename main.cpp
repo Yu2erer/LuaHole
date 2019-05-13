@@ -20,7 +20,7 @@ void TestSetToLua(LuaHole::LuaWrapper &L) {
     LuaHole::Set(L, "sstring", str);
 }
 
-void FuncTest(bool i) {
+void FuncTest(const char *i) {
     cout << "FuncTest " << i << endl;
 }
 

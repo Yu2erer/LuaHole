@@ -10,6 +10,16 @@
 
 namespace LuaHole {
 
+#ifndef BIND_CHECK_FUNC_ARG_NUM
+#define BIND_CHECK_FUNC_ARG_NUM(_state, _cnt, _ret) do{\
+int num = lua_gettop(_state);\
+if (num < _cnt) {\
+luaL_error(_state, "Need Get %d But Now Get %d", _cnt, num);\
+return _ret;\
+}\
+}while(0)
+#endif
+
 #ifndef PUSH_FUNC
 #define PUSH_FUNC do{\
 lua_pushlightuserdata(L, (void*)func);\
@@ -53,6 +63,7 @@ lua_setglobal(L, name);\
             PUSH_FUNC;
         }
         static int proxyFunc(lua_State *L) {
+            BIND_CHECK_FUNC_ARG_NUM(L, 1, 0);
             Arg1 arg1 = popValue<Arg1>(L);
             typedef typename __ret_void<Ret>::is_void is_void;
             return doCall<Ret>(L, (func)lua_touserdata(L, lua_upvalueindex(1)), arg1, is_void());
