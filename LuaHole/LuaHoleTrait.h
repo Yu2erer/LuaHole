@@ -98,11 +98,13 @@ namespace LuaHole {
 
     template <typename Ret, typename FUNC, typename Params>
     inline int doCall(lua_State *L, FUNC &fn, TypeListValues<Params> &tvl, __true_type) {
+        showStack(L);
         return Caller<Ret, TypeListSize<Params>::value>::f(L, fn, tvl, __true_type());
     }
 
     template <typename Ret, typename FUNC, typename Params>
     inline int doCall(lua_State *L, FUNC &fn, TypeListValues<Params> &tvl, __false_type) {
+        showStack(L);
         return Caller<Ret, TypeListSize<Params>::value>::f(L, fn, tvl, __false_type());
     }
 

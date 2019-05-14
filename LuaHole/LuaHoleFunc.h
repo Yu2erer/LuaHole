@@ -8,6 +8,7 @@
 #include "LuaHoleTrait.h"
 #include "LuaHolePush.h"
 #include "LuaHoleTypeList.h"
+#include "LuaHoleHelper.h"
 
 namespace LuaHole {
 
@@ -33,6 +34,7 @@ return _ret;\
             lua_setglobal(L, name);
         }
         static int proxyFunc(lua_State *L) {
+            showStack(L);
             typedef typename __func_traits<func>::Params params;
             BIND_CHECK_FUNC_ARG_NUM(L, TypeListSize<params>::value, 0);
             ArgList<params> args (L);

@@ -21,7 +21,6 @@ void TestSetToLua(LuaHole::LuaWrapper &L) {
 }
 
 int FuncTest(int i, const char *j, float f, bool b) {
-    printf("func: %s\n",__func__);
     cout << "FuncTest " << i << " " << j << " " << " " << b << " " << f  << endl;
     return 10;
 }
