@@ -12,8 +12,19 @@
 namespace LuaHole {
 
     typedef void None;
+
     template <typename Head, typename Tail = None>
     struct TypeList { typedef Tail TailType; };
+
+    template <typename List>
+    struct TypeListSize {
+        static const size_t value = TypeListSize<typename List::TailType>::value + 1;
+    };
+
+    template <>
+    struct TypeListSize<None> {
+        static const size_t value = 0;
+    };
 
     template <typename List>
     struct TypeListValues {
@@ -45,7 +56,8 @@ namespace LuaHole {
     struct ArgList <TypeList <Head, Tail>, Start>
             : public TypeListValues <TypeList <Head, Tail>> {
         ArgList(lua_State *L)
-         : TypeListValues <TypeList <Head, Tail>> (LuaHole::Get(L, Start), ArgList <Tail, Start + 1> (L)) { }
+         : TypeListValues <TypeList <Head, Tail>> (LuaHole::Get<Head>(L, Start), ArgList <Tail, Start + 1> (L)) {
+        }
     };
 
 }

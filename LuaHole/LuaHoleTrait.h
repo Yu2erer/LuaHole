@@ -22,27 +22,53 @@ namespace LuaHole {
         typedef __true_type is_void;
     };
 
+
+    template <typename Ret, size_t NUM_PARAMS>
+    struct Caller {};
+
+    template <typename Ret>
+    struct Caller<Ret, 0> {
+        template <typename FUNC, typename Params>
+        static int f(lua_State *L, FUNC &fn, TypeListValues<Params> &tvl, __true_type) {
+            fn();
+            return 0;
+        }
+        template <typename FUNC, typename Params>
+        static int f(lua_State *L, FUNC &fn, TypeListValues<Params> &tvl, __false_type) {
+            objPush<Ret>(L, fn());
+            return 1;
+        }
+    };
+
+    template <typename Ret, typename FUNC, typename Params>
+    int doCall(lua_State *L, FUNC &fn, TypeListValues<Params> &tvl, __true_type) {
+        return Caller<Ret, TypeListSize<Params>::value>::f(L, fn, tvl, __true_type());
+    }
+
+    template <typename Ret, typename FUNC, typename Params>
+    int doCall(lua_State *L, FUNC &fn, TypeListValues<Params> &tvl, __false_type) {
+        return Caller<Ret, TypeListSize<Params>::value>::f(L, fn, tvl, __false_type());
+    }
+
     // Trait<Func>
     template <typename FUNC, typename D = FUNC>
     struct __func_traits {};
 
     template <typename R, typename D>
     struct __func_traits<R(*)(), D> {
-        typedef D DeclType;
-        typedef R Returntype;
         typedef None Params;
-        static R call(D fn, TypeListValues <Params> tvl) {
-
+        typedef typename __ret_void<R>::is_void is_void;
+        static int call(lua_State *L, D fn, TypeListValues<Params> tvl) {
+            return doCall<R>(L, fn, tvl, is_void());
         }
     };
 
     template <typename R, typename P1, typename D>
     struct __func_traits<R(*)(P1), D> {
-        typedef D DeclType;
-        typedef R Returntype;
         typedef TypeList<P1> Params;
-        static R call(D fn, TypeListValues <Params> tvl) {
-
+        typedef typename __ret_void<R>::is_void is_void;
+        static int call(lua_State *L, D fn, TypeListValues <Params> tvl) {
+            return doCall<R>(L, fn, tvl, is_void());
         }
     };
 
