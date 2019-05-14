@@ -8,6 +8,7 @@
 #include <typeinfo>
 #include "LuaHeader.h"
 #include "LuaHolePop.h"
+#include "LuaHoleHelper.h"
 
 namespace LuaHole {
 

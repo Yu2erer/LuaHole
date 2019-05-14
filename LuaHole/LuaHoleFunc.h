@@ -16,7 +16,7 @@ namespace LuaHole {
 #define BIND_CHECK_FUNC_ARG_NUM(_state, _cnt, _ret) do{\
 int argsNum = lua_gettop(_state);\
 if (argsNum < _cnt) {\
-luaL_error(_state, "Need Get %d But Now Get %d", _cnt, argsNum);\
+luaL_error(_state, "At least %d But Now Only Get %d", _cnt, argsNum);\
 return _ret;\
 }\
 }while(0)
@@ -38,6 +38,7 @@ return _ret;\
             typedef typename __func_traits<func>::Params params;
             BIND_CHECK_FUNC_ARG_NUM(L, TypeListSize<params>::value, 0);
             ArgList<params> args (L);
+            lua_pop(L, int(TypeListSize<params>::value));
             return  __func_traits<func>::call(L, (func)lua_touserdata(L, lua_upvalueindex(1)), args);
         }
     };

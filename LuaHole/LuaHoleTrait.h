@@ -5,6 +5,7 @@
 #ifndef LUAHOLE_LUAHOLETRAIT_H
 #define LUAHOLE_LUAHOLETRAIT_H
 #include "LuaHoleTypeList.h"
+#include "LuaHoleHelper.h"
 
 namespace LuaHole {
 
