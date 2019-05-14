@@ -4,11 +4,11 @@
 
 #ifndef LUAHOLE_LUAHOLE_H
 #define LUAHOLE_LUAHOLE_H
-#include <iostream>
 #include "LuaHeader.h"
 #include "LuaHolePop.h"
 #include "LuaHolePush.h"
 #include "LuaHoleFunc.h"
+#include "LuaHoleHelper.h"
 
 namespace LuaHole {
 
@@ -21,7 +21,7 @@ namespace LuaHole {
             if (luaL_dofile(L, filename)) {
                 const char *err = lua_tostring(L, -1);
                 lua_pop(L, 1);
-                std::cout << "DEBUG(LuaWrapper::doFile): " << err << std::endl;
+                DEBUG(err);
                 return false;
             }
             return true;
@@ -31,7 +31,7 @@ namespace LuaHole {
             if (luaL_dostring(L, str)) {
                 const char *err = lua_tostring(L, -1);
                 lua_pop(L, 1);
-                std::cout << "DEBUG(LuaWrapper::doString): " << err << std::endl;
+                DEBUG(err);
                 return false;
             }
             return true;
