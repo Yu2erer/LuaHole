@@ -20,19 +20,20 @@ void TestSetToLua(LuaHole::LuaWrapper &L) {
     LuaHole::Set(L, "sstring", str);
 }
 
-int FuncTest() {
-    cout << "FuncTest " << endl;
+int FuncTest(int i, const char *j, float f, bool b) {
+    printf("func: %s\n",__func__);
+    cout << "FuncTest " << i << " " << j << " " << " " << b << " " << f  << endl;
     return 10;
 }
 
 int main() {
     LuaHole::LuaWrapper L;
-    TestSetToLua(L);
+//    TestSetToLua(L);
     L.RegisterFunc("FuncTest", FuncTest);
 //    L.RegisterFunc("printf", printf);
     L.doFile("Test.lua");
-    L.doString("print (\"C++ doString Succ\")");
-    TestGetFromLua(L);
+//    L.doString("print (\"C++ doString Succ\")");
+//    TestGetFromLua(L);
 
 
     return 0;

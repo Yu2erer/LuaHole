@@ -21,14 +21,6 @@ return _ret;\
 }while(0)
 #endif
 
-#ifndef PUSH_FUNC
-#define PUSH_FUNC do{\
-lua_pushlightuserdata(L, (void*)fn);\
-lua_pushcclosure(L, proxyFunc, 1);\
-lua_setglobal(L, name);\
-}while(0)
-#endif
-
     template <typename Ret, typename ...Param>
     struct funcBind{};
 
@@ -36,17 +28,20 @@ lua_setglobal(L, name);\
     struct funcBind<Ret(*)(Param...)> {
         typedef Ret(*func)(Param...);
         static void pushFunc(lua_State *L, const char *name, func fn) {
-            PUSH_FUNC;
+            lua_pushlightuserdata(L, (void*)fn);
+            lua_pushcclosure(L, proxyFunc, 1);
+            lua_setglobal(L, name);
         }
         static int proxyFunc(lua_State *L) {
             typedef typename __func_traits<func>::Params params;
+            BIND_CHECK_FUNC_ARG_NUM(L, TypeListSize<params>::value, 0);
             ArgList<params> args (L);
             return  __func_traits<func>::call(L, (func)lua_touserdata(L, lua_upvalueindex(1)), args);
         }
     };
 
     template <typename FUNC>
-    void RegisterFunc(lua_State *L, const char *name, FUNC fn) {
+    inline void RegisterFunc(lua_State *L, const char *name, FUNC fn) {
         funcBind<FUNC>::pushFunc(L, name, fn);
     }
 }
