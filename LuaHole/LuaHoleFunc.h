@@ -9,6 +9,7 @@
 #include "LuaHolePush.h"
 #include "LuaHoleTypeList.h"
 #include "LuaHoleHelper.h"
+#include "LuaHolePop.h"
 
 namespace LuaHole {
 
@@ -21,6 +22,76 @@ return _ret;\
 }\
 }while(0)
 #endif
+
+    inline bool checkCall(lua_State *L, const char *name) {
+        lua_getglobal(L, name);
+        if (lua_type(L, -1) != LUA_TFUNCTION) {
+            lua_pop(L, 1);
+            DEBUG("This function does not exist");
+            return false;
+        }
+        return true;
+    }
+
+    template <typename Ret>
+    inline Ret doCall(lua_State *L, int argsNum, int errFunc) {
+        showStack(L);
+        if (lua_pcall(L, argsNum, 1, errFunc) != 0) {
+            const char *err = lua_tostring(L, -1);
+            DEBUG(err);
+            lua_pop(L, -1);
+        }
+        return Get<Ret>(L, -1);
+    }
+
+    template <>
+    inline void doCall(lua_State *L, int argsNum, int errFunc) {
+        if (lua_pcall(L, argsNum, 0, errFunc) != 0) {
+            const char *err = lua_tostring(L, -1);
+            DEBUG(err);
+            lua_pop(L, -1);
+        }
+    }
+
+    template <typename Ret>
+    Ret Call(lua_State *L, const char *name) {
+        if (!checkCall(L, name)) { return Ret(); }
+        return doCall<Ret>(L, 0, 0);
+    }
+
+    template <typename Ret, typename Arg1>
+    Ret Call(lua_State *L, const char *name, const Arg1 &arg1) {
+        if (!checkCall(L, name)) { return Ret(); }
+        objPush<Arg1>(L, arg1);
+        return doCall<Ret>(L, 1, 0);
+    }
+
+    template <typename Ret, typename Arg1, typename Arg2>
+    Ret Call(lua_State *L, const char *name, const Arg1 &arg1, const Arg2 &arg2) {
+        if (!checkCall(L, name)) { return Ret(); }
+        objPush<Arg1>(L, arg1);
+        objPush<Arg2>(L, arg2);
+        return doCall<Ret>(L, 2, 0);
+    }
+
+    template <typename Ret, typename Arg1, typename Arg2, typename Arg3>
+    Ret Call(lua_State *L, const char *name, const Arg1 &arg1, const Arg2 &arg2, const Arg3 &arg3) {
+        if (!checkCall(L, name)) { return Ret(); }
+        objPush<Arg1>(L, arg1);
+        objPush<Arg2>(L, arg2);
+        objPush<Arg3>(L, arg3);
+        return doCall<Ret>(L, 3, 0);
+    }
+
+    template <typename Ret, typename Arg1, typename Arg2, typename Arg3, typename Arg4>
+    Ret Call(lua_State *L, const char *name, const Arg1 &arg1, const Arg2 &arg2, const Arg3 &arg3, const Arg4 &arg4) {
+        if (!checkCall(L, name)) { return Ret(); }
+        objPush<Arg1>(L, arg1);
+        objPush<Arg2>(L, arg2);
+        objPush<Arg3>(L, arg3);
+        objPush<Arg4>(L, arg4);
+        return doCall<Ret>(L, 4, 0);
+    }
 
     template <typename Ret, typename ...Param>
     struct funcBind{};
@@ -44,7 +115,7 @@ return _ret;\
     };
 
     template <typename FUNC>
-    inline void RegisterFunc(lua_State *L, const char *name, FUNC fn) {
+    inline void RegFunc(lua_State *L, const char *name, FUNC fn) {
         funcBind<FUNC>::pushFunc(L, name, fn);
     }
 }

@@ -28,9 +28,12 @@ int FuncTest(int i, const char *j, float f, bool b) {
 int main() {
     LuaHole::LuaWrapper L;
 //    TestSetToLua(L);
-    L.RegisterFunc("FuncTest", FuncTest);
-//    L.RegisterFunc("printf", printf);
+//    L.RegFunc("FuncTest", FuncTest);
+//    L.RegFunc("printf", printf);
+
     L.doFile("Test.lua");
+    string i = LuaHole::Call<string>(L, "luafunc", 38);
+    cout << i << endl;
 //    L.doString("print (\"C++ doString Succ\")");
 //    TestGetFromLua(L);
 
