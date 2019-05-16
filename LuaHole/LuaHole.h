@@ -9,6 +9,7 @@
 #include "LuaHolePush.h"
 #include "LuaHoleFunc.h"
 #include "LuaHoleHelper.h"
+#include "LuaHoleClass.h"
 
 namespace LuaHole {
 
@@ -50,9 +51,7 @@ namespace LuaHole {
         template <typename T>
         void Set(const char *name, const T &arg) const { LuaHole::Set(L, name, arg); }
         template <typename FUNC>
-        void RegFunc(const char *name, FUNC fn) const {
-            LuaHole::RegFunc(L, name, fn);
-        }
+        void RegFunc(const char *name, FUNC fn) const { LuaHole::RegFunc(L, name, fn); }
     private:
         lua_State *L;
     };

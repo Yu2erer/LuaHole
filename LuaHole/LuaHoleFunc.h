@@ -35,7 +35,6 @@ return _ret;\
 
     template <typename Ret>
     inline Ret doCall(lua_State *L, int argsNum, int errFunc) {
-        showStack(L);
         if (lua_pcall(L, argsNum, 1, errFunc) != 0) {
             const char *err = lua_tostring(L, -1);
             DEBUG(err);

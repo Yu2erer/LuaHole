@@ -5,6 +5,7 @@
 #ifndef LUAHOLE_LUAHOLEPOP_H
 #define LUAHOLE_LUAHOLEPOP_H
 #include "LuaHeader.h"
+#include "LuaHoleHelper.h"
 
 namespace LuaHole {
 
