@@ -39,6 +39,16 @@ namespace LuaHole {
             objPush<Ret>(L, fn());
             return 1;
         }
+        template <typename T, typename FUNC, typename Params>
+        static int f(lua_State *L, T *obj, FUNC &fn, TypeListValues<Params> &tvl, __true_type) {
+            (obj->fn());
+            return 0;
+        }
+        template <typename T, typename FUNC, typename Params>
+        static int f(lua_State *L, T *obj, FUNC &fn, TypeListValues<Params> &tvl, __false_type) {
+            objPush<Ret>(L, (obj->fn()));
+            return 1;
+        }
     };
 
     template <typename Ret>
@@ -51,6 +61,16 @@ namespace LuaHole {
         template <typename FUNC, typename Params>
         static int f(lua_State *L, FUNC &fn, TypeListValues<Params> &tvl, __false_type) {
             objPush<Ret>(L, fn(tvl.hd));
+            return 1;
+        }
+        template <typename T, typename FUNC, typename Params>
+        static int f(lua_State *L, T *obj, FUNC &fn, TypeListValues<Params> &tvl, __true_type) {
+            (obj->fn(tvl.hd));
+            return 0;
+        }
+        template <typename T, typename FUNC, typename Params>
+        static int f(lua_State *L, T *obj, FUNC &fn, TypeListValues<Params> &tvl, __false_type) {
+            objPush<Ret>(L, (obj->fn(tvl.hd)));
             return 1;
         }
     };
@@ -67,6 +87,16 @@ namespace LuaHole {
             objPush<Ret>(L, fn(tvl.hd, tvl.tl.hd));
             return 1;
         }
+        template <typename T, typename FUNC, typename Params>
+        static int f(lua_State *L, T *obj, FUNC &fn, TypeListValues<Params> &tvl, __true_type) {
+            (obj->fn(tvl.hd));
+            return 0;
+        }
+        template <typename T, typename FUNC, typename Params>
+        static int f(lua_State *L, T *obj, FUNC &fn, TypeListValues<Params> &tvl, __false_type) {
+            objPush<Ret>(L, (obj->fn(tvl.hd)));
+            return 1;
+        }
     };
 
     template <typename Ret>
@@ -79,6 +109,16 @@ namespace LuaHole {
         template <typename FUNC, typename Params>
         static int f(lua_State *L, FUNC &fn, TypeListValues<Params> &tvl, __false_type) {
             objPush<Ret>(L, fn(tvl.hd, tvl.tl.hd, tvl.tl.tl.hd));
+            return 1;
+        }
+        template <typename T, typename FUNC, typename Params>
+        static int f(lua_State *L, T *obj, FUNC &fn, TypeListValues<Params> &tvl, __true_type) {
+            (obj->fn(tvl.hd));
+            return 0;
+        }
+        template <typename T, typename FUNC, typename Params>
+        static int f(lua_State *L, T *obj, FUNC &fn, TypeListValues<Params> &tvl, __false_type) {
+            objPush<Ret>(L, (obj->fn(tvl.hd)));
             return 1;
         }
     };
@@ -95,6 +135,16 @@ namespace LuaHole {
             objPush<Ret>(L, fn(tvl.hd, tvl.tl.hd, tvl.tl.tl.hd, tvl.tl.tl.tl.hd));
             return 1;
         }
+        template <typename T, typename FUNC, typename Params>
+        static int f(lua_State *L, T *obj, FUNC &fn, TypeListValues<Params> &tvl, __true_type) {
+            (obj->fn(tvl.hd));
+            return 0;
+        }
+        template <typename T, typename FUNC, typename Params>
+        static int f(lua_State *L, T *obj, FUNC &fn, TypeListValues<Params> &tvl, __false_type) {
+            objPush<Ret>(L, (obj->fn(tvl.hd)));
+            return 1;
+        }
     };
 
     template <typename Ret, typename FUNC, typename Params>
@@ -102,6 +152,13 @@ namespace LuaHole {
         showStack(L);
         typedef typename __ret_void<Ret>::is_void is_void;
         return Caller<Ret, TypeListSize<Params>::value>::f(L, fn, tvl, is_void());
+    }
+
+    template <typename T, typename Ret, typename FUNC, typename Params>
+    inline int doCall(lua_State *L, T *obj, FUNC &fn, TypeListValues<Params> &tvl) {
+        showStack(L);
+        typedef typename __ret_void<Ret>::is_void is_void;
+        return Caller<Ret, TypeListSize<Params>::value>::f(L, obj, fn, tvl, is_void());
     }
 
     // Trait<Func>
@@ -148,5 +205,13 @@ namespace LuaHole {
         }
     };
 
+    template <typename T, typename R, typename D>
+    struct __func_traits<R(T::*)(), D> {
+        typedef None Params;
+        typedef T ClassType;
+        static int call(lua_State *L, T *obj, D fn, TypeListValues<Params> tvl) {
+            return doCall<R>(L, obj, fn, tvl);
+        }
+    };
 }
 #endif //LUAHOLE_LUAHOLETRAIT_H
