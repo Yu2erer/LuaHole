@@ -9,4 +9,4 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 include_directories(Lua/)
 include_directories(LuaHole/)
 
-add_executable(LuaHole main.cpp ${lua_src})
+add_executable(LuaHole main.cpp ${lua_src} Student.cpp Student.h LuaHole/LuaHoleClassName.h)

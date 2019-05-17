@@ -57,8 +57,7 @@ namespace LuaHole {
     struct ArgList <TypeList <Head, Tail>, Start>
             : public TypeListValues <TypeList <Head, Tail>> {
         ArgList(lua_State *L)
-         : TypeListValues <TypeList <Head, Tail>> (LuaHole::Get<Head>(L, Start), ArgList <Tail, Start + 1> (L)) {
-        }
+         : TypeListValues <TypeList <Head, Tail>> (LuaHole::Get<Head>(L, Start), ArgList <Tail, Start + 1> (L)) { }
     };
 
 }

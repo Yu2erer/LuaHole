@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include "LuaHole.h"
+#include "Student.h"
 
 using namespace std;
 
@@ -30,13 +31,15 @@ int main() {
 //    TestSetToLua(L);
 //    L.RegFunc("FuncTest", FuncTest);
 //    L.RegFunc("printf", printf);
+    LuaHole::RegClass<Student>(L, "ss", LuaHole::constructor<Student>);
+    LuaHole::RegMethod(L, "print", &Student::print);
+
 
     L.doFile("Test.lua");
     string i = LuaHole::Call<string>(L, "luafunc", 38);
-    cout << i << endl;
+//    cout << i << endl;
 //    L.doString("print (\"C++ doString Succ\")");
 //    TestGetFromLua(L);
-
-
+//    LuaHole::RegMethod(L, "getAge", &Student::getAge);
     return 0;
 }

@@ -41,12 +41,12 @@ namespace LuaHole {
         }
         template <typename T, typename FUNC, typename Params>
         static int f(lua_State *L, T *obj, FUNC &fn, TypeListValues<Params> &tvl, __true_type) {
-            (obj->fn());
+            (obj->*fn)();
             return 0;
         }
         template <typename T, typename FUNC, typename Params>
         static int f(lua_State *L, T *obj, FUNC &fn, TypeListValues<Params> &tvl, __false_type) {
-            objPush<Ret>(L, (obj->fn()));
+            objPush<Ret>(L, (obj->*fn)());
             return 1;
         }
     };
@@ -210,7 +210,7 @@ namespace LuaHole {
         typedef None Params;
         typedef T ClassType;
         static int call(lua_State *L, T *obj, D fn, TypeListValues<Params> tvl) {
-            return doCall<R>(L, obj, fn, tvl);
+            return doCall<T, R>(L, obj, fn, tvl);
         }
     };
 }

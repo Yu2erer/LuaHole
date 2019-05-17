@@ -10,6 +10,9 @@
 #include "LuaHoleTypeList.h"
 #include "LuaHoleHelper.h"
 #include "LuaHolePop.h"
+#include "LuaHoleClass.h"
+#include "LuaHoleUserData.h"
+#include "LuaHoleClassName.h"
 
 namespace LuaHole {
 
@@ -100,16 +103,53 @@ return _ret;\
         typedef Ret(*func)(Param...);
         static void pushFunc(lua_State *L, const char *name, func fn) {
             lua_pushlightuserdata(L, (void*)fn);
-            lua_pushcclosure(L, proxyFunc, 1);
+            lua_pushcclosure(L, &proxyFunc, 1);
             lua_setglobal(L, name);
         }
         static int proxyFunc(lua_State *L) {
             showStack(L);
             typedef typename __func_traits<func>::Params params;
             BIND_CHECK_FUNC_ARG_NUM(L, TypeListSize<params>::value, 0);
-            ArgList<params> args (L);
+            ArgList<params> args(L);
             lua_pop(L, int(TypeListSize<params>::value));
             return  __func_traits<func>::call(L, (func)lua_touserdata(L, lua_upvalueindex(1)), args);
+        }
+    };
+
+    template<typename T>
+    inline int inject(lua_State *L, T *obj) {
+        UserData<T>** ud = static_cast<UserData<T>**>(lua_newuserdata(L, sizeof(UserData<T>*)));
+        *ud = new UserData<T>(obj);
+
+        luaL_getmetatable(L, ClassName<T>::getName());
+        lua_setmetatable(L, -2);
+        return 1;
+    }
+
+    template<typename T>
+    inline int constructor(lua_State *L) {
+        return inject<T>(L, new T());
+    }
+
+    template <typename Ret, typename T, typename ...Param>
+    struct funcBind<Ret(T::*)(Param...)> {
+        typedef Ret(T::*func)(Param...);
+        typedef typename __func_traits<func>::Params params;
+        static void pushFunc(lua_State *L, const char *name, func fn) {
+            luaL_getmetatable(L, ClassName<T>::getName());
+            lua_pushstring(L, name);
+            new (lua_newuserdata(L, sizeof(func))) func(fn);
+            lua_pushcclosure(L, &proxyFunc, 1);
+            lua_rawset(L, -3);
+            lua_pop(L, 1);
+        }
+        static int proxyFunc(lua_State *L) {
+            showStack(L);
+            T *obj = (T*)lua_touserdata(L, 1);
+            ArgList<params, 2> args(L);
+            lua_pop(L, int(TypeListSize<params>::value) + 1);
+            const func& fn = *static_cast<const func*>(lua_touserdata(L, lua_upvalueindex(1)));
+            return  __func_traits<func>::call(L, obj, fn, args);
         }
     };
 
