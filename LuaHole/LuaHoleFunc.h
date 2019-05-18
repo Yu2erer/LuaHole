@@ -106,11 +106,11 @@ return _ret;\
             lua_setglobal(L, name);
         }
         static int proxyFunc(lua_State *L) {
-            showStack(L);
             typedef typename __func_traits<func>::Params params;
             BIND_CHECK_FUNC_ARG_NUM(L, TypeListSize<params>::value, 0);
             ArgList<params> args(L);
             lua_pop(L, int(TypeListSize<params>::value));
+            assert(lua_gettop(L) == 0);
             return  __func_traits<func>::call(L, (func)lua_touserdata(L, lua_upvalueindex(1)), args);
         }
     };
@@ -143,10 +143,10 @@ return _ret;\
             lua_pop(L, 1);
         }
         static int proxyFunc(lua_State *L) {
-            showStack(L);
             T *obj = (T*)lua_touserdata(L, 1);
             ArgList<params, 2> args(L);
             lua_pop(L, int(TypeListSize<params>::value) + 1);
+            assert(lua_gettop(L) == 0);
             const func& fn = *static_cast<const func*>(lua_touserdata(L, lua_upvalueindex(1)));
             return  __func_traits<func>::call(L, obj, fn, args);
         }
