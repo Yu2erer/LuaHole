@@ -35,7 +35,7 @@ int main() {
     LuaHole::RegMethod(L, "print", &Student::print);
 
 
-    L.doFile("Test.lua");
+    L.doFile("../Test/Test.lua");
     string i = LuaHole::Call<string>(L, "luafunc", 38);
 //    cout << i << endl;
 //    L.doString("print (\"C++ doString Succ\")");

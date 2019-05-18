@@ -10,7 +10,6 @@
 #include "LuaHoleTypeList.h"
 #include "LuaHoleHelper.h"
 #include "LuaHolePop.h"
-#include "LuaHoleClass.h"
 #include "LuaHoleUserData.h"
 #include "LuaHoleClassName.h"
 
