@@ -31,15 +31,16 @@ int main() {
 //    TestSetToLua(L);
 //    L.RegFunc("FuncTest", FuncTest);
 //    L.RegFunc("printf", printf);
-    LuaHole::RegClass<Student>(L, "ss", LuaHole::constructor<Student>);
+    LuaHole::RegClass<Student>(L, "ss");
+    LuaHole::RegCtor<Student, void(*)(int)>(L);
     LuaHole::RegMethod(L, "print", &Student::print);
+    LuaHole::RegMethod(L, "setAge", &Student::setAge);
 
 
     L.doFile("../Test/Test.lua");
-    string i = LuaHole::Call<string>(L, "luafunc", 38);
+//    string i = LuaHole::Call<string>(L, "luafunc", 38);
 //    cout << i << endl;
 //    L.doString("print (\"C++ doString Succ\")");
 //    TestGetFromLua(L);
-//    LuaHole::RegMethod(L, "getAge", &Student::getAge);
     return 0;
 }

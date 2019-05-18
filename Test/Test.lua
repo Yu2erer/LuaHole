@@ -19,6 +19,6 @@ function luafunc(i)
     return i.." haha"
 end
 
- local s = ss()
+ local s = ss(520)
  s:print()
---printf("test printf %d %.2f %d\n", 13.14, 10, 33)
+ s:setAge(300)

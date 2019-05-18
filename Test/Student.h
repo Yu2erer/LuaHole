@@ -12,7 +12,7 @@ using namespace std;
 
 class Student {
 public:
-    Student();
+    Student(int i);
     ~Student();
     string getName();
     void setName(string name);

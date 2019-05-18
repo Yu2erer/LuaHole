@@ -10,7 +10,6 @@
 #include "LuaHoleTypeList.h"
 #include "LuaHoleHelper.h"
 #include "LuaHolePop.h"
-#include "LuaHoleUserData.h"
 #include "LuaHoleClassName.h"
 
 namespace LuaHole {
@@ -97,6 +96,7 @@ return _ret;\
     template <typename Ret, typename ...Param>
     struct funcBind{};
 
+    // Free Func Bind
     template <typename Ret, typename ...Param>
     struct funcBind<Ret(*)(Param...)> {
         typedef Ret(*func)(Param...);
@@ -104,6 +104,7 @@ return _ret;\
             lua_pushlightuserdata(L, (void*)fn);
             lua_pushcclosure(L, &proxyFunc, 1);
             lua_setglobal(L, name);
+            assert(lua_gettop(L) == 0);
         }
         static int proxyFunc(lua_State *L) {
             typedef typename __func_traits<func>::Params params;
@@ -115,21 +116,7 @@ return _ret;\
         }
     };
 
-    template<typename T>
-    inline int inject(lua_State *L, T *obj) {
-        UserData<T>** ud = static_cast<UserData<T>**>(lua_newuserdata(L, sizeof(UserData<T>*)));
-        *ud = new UserData<T>(obj);
-
-        luaL_getmetatable(L, ClassName<T>::getName());
-        lua_setmetatable(L, -2);
-        return 1;
-    }
-
-    template<typename T>
-    inline int constructor(lua_State *L) {
-        return inject<T>(L, new T());
-    }
-
+    // Member Func Bind
     template <typename Ret, typename T, typename ...Param>
     struct funcBind<Ret(T::*)(Param...)> {
         typedef Ret(T::*func)(Param...);
@@ -141,9 +128,11 @@ return _ret;\
             lua_pushcclosure(L, &proxyFunc, 1);
             lua_rawset(L, -3);
             lua_pop(L, 1);
+            assert(lua_gettop(L) == 0);
         }
         static int proxyFunc(lua_State *L) {
             T *obj = (T*)lua_touserdata(L, 1);
+            BIND_CHECK_FUNC_ARG_NUM(L, TypeListSize<params>::value + 1, 0);
             ArgList<params, 2> args(L);
             lua_pop(L, int(TypeListSize<params>::value) + 1);
             assert(lua_gettop(L) == 0);

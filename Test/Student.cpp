@@ -5,8 +5,8 @@
 #include "Student.h"
 
 
-Student::Student() : name("default"), age(21) {
-    cout << "Student Contructor called" << endl;
+Student::Student(int i) : name("default"), age(21) {
+    cout << "Student Contructor called " << i << endl;
 }
 Student::~Student() {
     cout << "Student Destructor called" << endl;
@@ -25,6 +25,7 @@ int Student::getAge() {
 }
 
 void Student::setAge(int age) {
+    cout << "Age: " << age << endl;
     this->age = age;
 }
 

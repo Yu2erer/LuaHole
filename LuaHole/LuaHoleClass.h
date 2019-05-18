@@ -19,11 +19,9 @@ namespace LuaHole {
         return 0;
     }
 
-    template <typename T, typename FUNC>
-    inline void RegClass(lua_State *L, const char *name, FUNC fn) {
+    template <typename T>
+    inline void RegClass(lua_State *L, const char *name) {
         ClassName<T>::setName(name);
-        lua_pushcfunction(L, fn);
-        lua_setglobal(L, name);
 
         luaL_newmetatable(L, name);
         lua_pushstring(L, "__index");
@@ -38,6 +36,22 @@ namespace LuaHole {
         lua_pushcfunction(L, &__gc<T>);
         lua_rawset(L, -3);
         lua_pop(L, 1);
+        assert(lua_gettop(L) == 0);
+    }
+
+    template <typename T, typename FUNC>
+    inline int proxyCtor(lua_State *L) {
+        typedef typename __func_traits<FUNC>::Params params;
+        ArgList<params> args(L);
+        lua_pop(L, int(TypeListSize<params>::value));
+        showStack(L);
+        return __func_traits<FUNC>::template call<T>(L, args);
+    }
+
+    template <typename T, typename FUNC>
+    inline void RegCtor(lua_State *L) {
+        lua_pushcclosure(L, &proxyCtor<T, FUNC>, 0);
+        lua_setglobal(L, ClassName<T>::getName());
     }
 
     template <typename FUNC>
